@@ -6,6 +6,7 @@ import com.desafio.foro.modelo.Topico;
 import com.desafio.foro.modelo.obtener_datos.DatosActualizarTopico;
 import com.desafio.foro.modelo.obtener_datos.DatosRegistroTopico;
 import com.desafio.foro.repository.TopicoRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public class TopicoController {
     TopicoRepository topicoRepository;
 
     @PostMapping
+    @Tag(name = "Registro de Tópico", description = "Permite el registro de un tópico nuevo")
     public ResponseEntity<DatosRespuestaTopico> registrarTopico(@RequestBody @Valid DatosRegistroTopico datos,
                                                                 UriComponentsBuilder uriComponentsBuilder){
         Topico topico = topicoRepository.save(new Topico(datos));
@@ -38,6 +40,7 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
+    @Tag(name = "Obtener Tópico por Id", description = "Permite obtener los detalles de un tópico por el Id")
     public ResponseEntity<DatosRespuestaTopico> retornaDatosTopico(@PathVariable Long id){
         Topico topico = topicoRepository.getReferenceById(id);
         DatosRespuestaTopico datosTopico = new DatosRespuestaTopico(topico.getTitulo(),
@@ -48,6 +51,7 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @Tag(name = "Eliminar Tópico", description = "Permite eliminar un tópico por el ID")
     public ResponseEntity eliminarTopico(@PathVariable Long id){
         Topico topico = topicoRepository.getReferenceById(id);
         topicoRepository.delete(topico);
@@ -55,6 +59,7 @@ public class TopicoController {
     }
 
     @GetMapping
+    @Tag(name = "Listar Tópicos", description = "Permite listar los tópicos registrados")
     public ResponseEntity<Page<DatosListadoTopico>> listadoTopicos(@PageableDefault Pageable paginacion){
         return ResponseEntity.ok( topicoRepository.findByStatusTrue(paginacion)
                 .map(DatosListadoTopico::new)
@@ -63,6 +68,7 @@ public class TopicoController {
 
     @PutMapping
     @Transactional
+    @Tag(name = "Actualizar Tópico", description = "Permite actualizar los tópicos actualizados")
     public ResponseEntity actualizarTopico(@RequestBody @Valid DatosActualizarTopico datosActualizarTopico){
         Topico topico = topicoRepository.getReferenceById(datosActualizarTopico.id());
         topico.actualizarDatos(datosActualizarTopico);
